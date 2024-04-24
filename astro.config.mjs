@@ -1,10 +1,12 @@
 import { defineConfig } from 'astro/config';
 import { visit } from 'unist-util-visit'
 import md5 from 'md5';
+import sitemap from '@astrojs/sitemap';
 
 import { SITE_URL } from './src/consts';
 
 
+// Rebuild HTML tree.
 function pipeline() {
   return [
 
@@ -100,7 +102,7 @@ function pipeline() {
     () => (tree) => {
       for (let i = 0; i < tree.children.length; i++) {
         let node = tree.children[i];
-        if (node.type === "element" && ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', "ul", "ol"].includes(node.tagName)) {
+        if (node.type === "element" && ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', "ul", "ol","blockquote"].includes(node.tagName)) {
 
           let next = tree.children[i + 1];
           let nodes = [node];
@@ -171,4 +173,5 @@ export default defineConfig({
     rehypePlugins: pipeline(),
     syntaxHighlight: 'prism',
   },
+  integrations: [sitemap()],
 });
